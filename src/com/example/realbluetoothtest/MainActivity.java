@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Closeable;
+import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 
 
@@ -25,11 +26,16 @@ public class MainActivity extends Activity {
 		
 		@Override
 		public boolean handleMessage(Message msg) {
-			Context context = getApplicationContext();
-        	int duration = Toast.LENGTH_SHORT;
-
-        	Toast toast = Toast.makeText(context, msg.getData().getString(null), duration);
-        	toast.show();
+//			Context context = getApplicationContext();
+//        	int duration = Toast.LENGTH_SHORT;
+//
+//        	Toast toast = Toast.makeText(context, msg.getData().getString(null), duration);
+//        	toast.show();
+//			return false;
+			Bundle b = msg.getData();
+			int x = b.getInt("x"), y = b.getInt("y");
+			boolean c = b.getBoolean("c");
+			//Do stuff here
 			return false;
 		}
 	});
@@ -110,13 +116,21 @@ public class MainActivity extends Activity {
                 try {
                     // Read from the InputStream
                     bytes = myIS.read(buffer);
-                    String s = new String(buffer, 0, bytes);
-                    buffer = new byte[1024];
+                    byte[] data = Arrays.copyOf(buffer, bytes);
                     Message m = Message.obtain();
                     Bundle b = new Bundle();
-                    b.putString(null, s);
+                    b.putInt("x", data[0]);
+                    b.putInt("y", data[1]);
+                    b.putBoolean("c", data[2] == 1);
                     m.setData(b);
                     h.sendMessage(m);
+//                    String s = new String(buffer, 0, bytes);
+//                    buffer = new byte[1024];
+//                    Message m = Message.obtain();
+//                    Bundle b = new Bundle();
+//                    b.putString(null, s);
+//                    m.setData(b);
+//                    h.sendMessage(m);
                 } catch (IOException e) {
                 	Log.e("MainActivity", "Error reading from input stream");
                     break;
@@ -125,16 +139,16 @@ public class MainActivity extends Activity {
     	}
     }
     
-    private ArrayBlockingQueue<String> abq = new ArrayBlockingQueue<String>(256); 
-    
-    public void handle(String s) {
-    	try {
-    		abq.put(s);
-    	} catch (InterruptedException ie) {
-    		Log.e("MainActivity", "Fail to put into ArrayBlockingQueue");
-    	}
-    }
-    
+//    private ArrayBlockingQueue<String> abq = new ArrayBlockingQueue<String>(256); 
+//    
+//    public void handle(String s) {
+//    	try {
+//    		abq.put(s);
+//    	} catch (InterruptedException ie) {
+//    		Log.e("MainActivity", "Fail to put into ArrayBlockingQueue");
+//    	}
+//    }
+//    
 //    public void toaster()
 //    {
 //    	while(true) {
@@ -159,6 +173,14 @@ public class MainActivity extends Activity {
     public void sendMessage(View v) {
     	try {
     		os.write("HELLO WORLD".getBytes());
+    	} catch(IOException ioe) {
+    		Log.e("MainActivity", "Error writing to output stream");
+    	}
+    }
+    
+    public void sendMove(int x, int y, char c) {
+    	try {
+    		os.write(new byte[]{ (byte) x, (byte) y, (byte) c});
     	} catch(IOException ioe) {
     		Log.e("MainActivity", "Error writing to output stream");
     	}
