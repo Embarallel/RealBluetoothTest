@@ -9,6 +9,7 @@ import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 
 public class BluetoothJoin extends Thread {
 	private final BluetoothSocket mySocket;
@@ -31,7 +32,9 @@ public class BluetoothJoin extends Thread {
 		try {
 			// MY_UUID is the app's UUID string, also used by the server code
 			tmp = myFriendDevice.createRfcommSocketToServiceRecord(UUID.fromString("426a19a0-b234-11e3-a5e2-0800200c9a66"));
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			Log.e("BluetoothJoin", "IOException at Socket creation");
+		}
 		mySocket = tmp;
 		
 		this.c = c;
@@ -47,10 +50,13 @@ public class BluetoothJoin extends Thread {
 			c[0] = mySocket.getInputStream();
 			c[1] = mySocket.getOutputStream();
 		} catch (IOException connectException) {
+			Log.e("BluetoothJoin", "IOException at connect or stream creation");
 			// Unable to connect; close the socket and get out
 			try {
 				mySocket.close();
-			} catch (IOException closeException) { }
+			} catch (IOException closeException) {
+				Log.e("BluetoothJoin", "IOException at close");
+			}
 			return;
 		}
 	}

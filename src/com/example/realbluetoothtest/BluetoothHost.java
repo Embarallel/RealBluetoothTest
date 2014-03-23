@@ -7,6 +7,7 @@ import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 
 public class BluetoothHost extends Thread {
 	private final BluetoothServerSocket myServerSocket;
@@ -20,7 +21,9 @@ public class BluetoothHost extends Thread {
 		try {
 			// MY_UUID is the app's UUID string, also used by the client code
 			tmp = BluetoothAdapter.getDefaultAdapter().listenUsingRfcommWithServiceRecord("ServerTest", UUID.fromString("426a19a0-b234-11e3-a5e2-0800200c9a66"));
-		} catch (IOException e) { }
+		} catch (IOException e) {
+			Log.e("BluetoothHost", "IOException at ServerSocket creation");
+		}
 		myServerSocket = tmp;
 		this.c = c;
 	}
@@ -32,6 +35,7 @@ public class BluetoothHost extends Thread {
 			try {
 				mySocket = myServerSocket.accept();
 			} catch (IOException e) {
+				Log.e("BluetoothHost", "IOException at Socket creation");
 				break;
 			}
 			// If a connection was accepted
@@ -41,6 +45,7 @@ public class BluetoothHost extends Thread {
 					c[1] = mySocket.getOutputStream();
 					myServerSocket.close();
 				} catch (IOException ioe) {
+					Log.e("BluetoothHost", "IOException at stream creation");
 				}
 				break;
 			}

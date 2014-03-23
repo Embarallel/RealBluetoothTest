@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import android.util.Log;
 
 public class MainActivity extends Activity {
 	private InputStream is;
@@ -50,6 +51,7 @@ public class MainActivity extends Activity {
     		try {
     		Thread.sleep(50);
     		} catch(InterruptedException ie) {
+    			Log.e("MainActivity", "Thread sleep interrupted, host");
     			break;
     		}
     	}
@@ -66,6 +68,7 @@ public class MainActivity extends Activity {
     		try {
     		Thread.sleep(50);
     		} catch(InterruptedException ie) {
+    			Log.e("MainActivity", "Thread sleep interrupted, join");
     			break;
     		}
     	}
@@ -91,6 +94,7 @@ public class MainActivity extends Activity {
                     buffer = new byte[1024];
                     handle(s);
                 } catch (IOException e) {
+                	Log.e("MainActivity", "Error reading from input stream");
                     break;
                 }
             }
@@ -109,6 +113,8 @@ public class MainActivity extends Activity {
     public void sendMessage(View v) {
     	try {
     		os.write("HELLO WORLD".getBytes());
-    	} catch(IOException ioe) { }
+    	} catch(IOException ioe) {
+    		Log.e("MainActivity", "Error writing to output stream");
+    	}
     }
 }
