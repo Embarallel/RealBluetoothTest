@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
     	toast.show();
     }
     
-    public void sendMessage(String s) {
+    public void sendMessage(View v) {
     	try {
     		os.write("HELLO WORLD".getBytes());
     	} catch(IOException ioe) { }
