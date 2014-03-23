@@ -15,36 +15,22 @@
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="startServer"
-            android:text="Server" />
+            android:onClick="host"
+            android:text="Host" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="sendMessage"
-            android:text="Send Message" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TAP ONLY ONE AT A TIME"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="startClient"
-            android:text="Client" />
+            android:onClick="join"
+            android:text="Join" />
 
         <Button
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="receiveMessage"
-            android:text="Receive Message" />
+            android:onClick="sendMessage"
+            android:text="Send Message" />
 
     </LinearLayout>
 
