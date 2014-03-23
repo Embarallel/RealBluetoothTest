@@ -11,6 +11,7 @@ import android.util.Log;
 
 public class BluetoothHost extends Thread {
 	private final BluetoothServerSocket myServerSocket;
+	private final BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	private final Closeable[] c;
 	
 	//First spot will hold an input stream, second spot will hold an output stream.  Wait until both are occupied
@@ -20,7 +21,7 @@ public class BluetoothHost extends Thread {
 		BluetoothServerSocket tmp = null;
 		try {
 			// MY_UUID is the app's UUID string, also used by the client code
-			tmp = BluetoothAdapter.getDefaultAdapter().listenUsingRfcommWithServiceRecord("ServerTest", UUID.fromString("426a19a0-b234-11e3-a5e2-0800200c9a66"));
+			tmp = myBluetoothAdapter.listenUsingRfcommWithServiceRecord("ServerTest", UUID.fromString("426a19a0-b234-11e3-a5e2-0800200c9a66"));
 		} catch (IOException e) {
 			Log.e("BluetoothHost", "IOException at ServerSocket creation");
 		}
