@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
     	Closeable[] c = new Closeable[2];
     	BluetoothJoin bj = new BluetoothJoin(c);
     	bj.start();
-    	while(c[0] != null && c[1] != null)
+    	while(c[0] == null || c[1] == null)
     	{
     		try {
     		Thread.sleep(50);

@@ -47,10 +47,8 @@ public class BluetoothJoin extends Thread {
 		try {
 			// Connect the device through the socket. This will block until it succeeds or throws an exception
 			mySocket.connect();
-			c[0] = mySocket.getInputStream();
-			c[1] = mySocket.getOutputStream();
 		} catch (IOException connectException) {
-			Log.e("BluetoothJoin", "IOException at connect or stream creation");
+			Log.e("BluetoothJoin", "IOException at connect");
 			// Unable to connect; close the socket and get out
 			try {
 				mySocket.close();
@@ -58,6 +56,12 @@ public class BluetoothJoin extends Thread {
 				Log.e("BluetoothJoin", "IOException at close");
 			}
 			return;
+		}
+		try {
+			c[0] = mySocket.getInputStream();
+			c[1] = mySocket.getOutputStream();
+		} catch (IOException ioe) {
+			Log.e("BluetoothJoin", "IOException at stream creation");
 		}
 	}
 
