@@ -122,6 +122,14 @@ public class MainActivity extends Activity {
     public void toaster()
     {
     	while(true) {
+    		while(abq.isEmpty()) {
+    			try {
+    	    		Thread.sleep(50);
+    	    	} catch(InterruptedException ie) {
+    	    		Log.e("MainActivity", "Thread sleep interrupted, toaster");
+    	    		break;
+    	    	}
+    		}
     		String s = abq.remove();
     		Context context = getApplicationContext();
         	CharSequence text = s;
