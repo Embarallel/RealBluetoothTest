@@ -33,8 +33,7 @@ public class MainActivity extends Activity {
 //        	toast.show();
 //			return false;
 			Bundle b = msg.getData();
-			int x = b.getInt("x"), y = b.getInt("y");
-			boolean c = b.getBoolean("c");
+			int x = b.getInt("x");
 			//Do stuff here
 			return false;
 		}
@@ -120,8 +119,6 @@ public class MainActivity extends Activity {
                     Message m = Message.obtain();
                     Bundle b = new Bundle();
                     b.putInt("x", data[0]);
-                    b.putInt("y", data[1]);
-                    b.putBoolean("c", data[2] == 1);
                     m.setData(b);
                     h.sendMessage(m);
 //                    String s = new String(buffer, 0, bytes);
@@ -178,9 +175,9 @@ public class MainActivity extends Activity {
     	}
     }
     
-    public void sendMove(int x, int y, char c) {
+    public void sendMove(int x) {
     	try {
-    		os.write(new byte[]{ (byte) x, (byte) y, (byte) c});
+    		os.write(new byte[]{ (byte) x });
     	} catch(IOException ioe) {
     		Log.e("MainActivity", "Error writing to output stream");
     	}
