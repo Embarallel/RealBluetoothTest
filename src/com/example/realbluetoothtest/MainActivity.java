@@ -10,6 +10,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +21,18 @@ import android.util.Log;
 public class MainActivity extends Activity {
 	private InputStream is;
 	private OutputStream os;
+	private Handler h = new Handler(new Handler.Callback() {
+		
+		@Override
+		public boolean handleMessage(Message msg) {
+			Context context = getApplicationContext();
+        	int duration = Toast.LENGTH_SHORT;
+
+        	Toast toast = Toast.makeText(context, msg.getData().getString(null), duration);
+        	toast.show();
+			return false;
+		}
+	});
     
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +74,6 @@ public class MainActivity extends Activity {
     	os = (OutputStream) c[1];
     	BluetoothListener bl = new BluetoothListener(is);
     	bl.start();
-    	toaster();
     }
     
     public void join(View v) {
@@ -80,7 +93,6 @@ public class MainActivity extends Activity {
     	os = (OutputStream) c[1];
     	BluetoothListener bl = new BluetoothListener(is);
     	bl.start();
-    	toaster();
     }
     
     class BluetoothListener extends Thread {
@@ -100,7 +112,11 @@ public class MainActivity extends Activity {
                     bytes = myIS.read(buffer);
                     String s = new String(buffer, 0, bytes);
                     buffer = new byte[1024];
-                    handle(s);
+                    Message m = Message.obtain();
+                    Bundle b = new Bundle();
+                    b.putString(null, s);
+                    m.setData(b);
+                    h.sendMessage(m);
                 } catch (IOException e) {
                 	Log.e("MainActivity", "Error reading from input stream");
                     break;
@@ -119,26 +135,26 @@ public class MainActivity extends Activity {
     	}
     }
     
-    public void toaster()
-    {
-    	while(true) {
-    		while(abq.isEmpty()) {
-    			try {
-    	    		Thread.sleep(50);
-    	    	} catch(InterruptedException ie) {
-    	    		Log.e("MainActivity", "Thread sleep interrupted, toaster");
-    	    		break;
-    	    	}
-    		}
-    		String s = abq.remove();
-    		Context context = getApplicationContext();
-        	CharSequence text = s;
-        	int duration = Toast.LENGTH_SHORT;
-
-        	Toast toast = Toast.makeText(context, text, duration);
-        	toast.show();
-    	}
-    }
+//    public void toaster()
+//    {
+//    	while(true) {
+//    		while(abq.isEmpty()) {
+//    			try {
+//    	    		Thread.sleep(50);
+//    	    	} catch(InterruptedException ie) {
+//    	    		Log.e("MainActivity", "Thread sleep interrupted, toaster");
+//    	    		break;
+//    	    	}
+//    		}
+//    		String s = abq.remove();
+//    		Context context = getApplicationContext();
+//        	CharSequence text = s;
+//        	int duration = Toast.LENGTH_SHORT;
+//
+//        	Toast toast = Toast.makeText(context, text, duration);
+//        	toast.show();
+//    	}
+//    }
     
     public void sendMessage(View v) {
     	try {
