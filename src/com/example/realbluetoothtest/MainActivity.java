@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Closeable;
+import java.util.concurrent.ArrayBlockingQueue;
 
 
 import android.app.Activity;
@@ -57,6 +58,9 @@ public class MainActivity extends Activity {
     	}
     	is = (InputStream) c[0];
     	os = (OutputStream) c[1];
+    	BluetoothListener bl = new BluetoothListener(is);
+    	bl.start();
+    	toaster();
     }
     
     public void join(View v) {
@@ -74,12 +78,16 @@ public class MainActivity extends Activity {
     	}
     	is = (InputStream) c[0];
     	os = (OutputStream) c[1];
+    	BluetoothListener bl = new BluetoothListener(is);
+    	bl.start();
+    	toaster();
     }
     
     class BluetoothListener extends Thread {
-    	private InputStream is;
+    	private InputStream myIS;
+    	
     	BluetoothListener(InputStream is) {
-    		this.is = is;
+    		myIS = is;
     	}
     	
     	public void run() {
@@ -89,7 +97,7 @@ public class MainActivity extends Activity {
     		while (true) {
                 try {
                     // Read from the InputStream
-                    bytes = is.read(buffer);
+                    bytes = myIS.read(buffer);
                     String s = new String(buffer, 0, bytes);
                     buffer = new byte[1024];
                     handle(s);
@@ -101,13 +109,27 @@ public class MainActivity extends Activity {
     	}
     }
     
+    private ArrayBlockingQueue<String> abq = new ArrayBlockingQueue<String>(256); 
+    
     public void handle(String s) {
-    	Context context = getApplicationContext();
-    	CharSequence text = s;
-    	int duration = Toast.LENGTH_SHORT;
+    	try {
+    		abq.put(s);
+    	} catch (InterruptedException ie) {
+    		Log.e("MainActivity", "Fail to put into ArrayBlockingQueue");
+    	}
+    }
+    
+    public void toaster()
+    {
+    	while(true) {
+    		String s = abq.remove();
+    		Context context = getApplicationContext();
+        	CharSequence text = s;
+        	int duration = Toast.LENGTH_SHORT;
 
-    	Toast toast = Toast.makeText(context, text, duration);
-    	toast.show();
+        	Toast toast = Toast.makeText(context, text, duration);
+        	toast.show();
+    	}
     }
     
     public void sendMessage(View v) {
